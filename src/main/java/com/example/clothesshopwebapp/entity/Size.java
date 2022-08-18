@@ -19,5 +19,6 @@ public class Size {
     private Long id;
 
     //@NotBlank(message = "Name should not be null")
+    @Column(unique=true)
     private String name;
 }

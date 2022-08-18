@@ -20,5 +20,6 @@ public class Season {
 
 
     //@NotBlank(message = "Name should not be null")
+    @Column(unique=true)
     private String name;
 }

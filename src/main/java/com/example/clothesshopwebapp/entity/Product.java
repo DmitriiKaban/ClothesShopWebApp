@@ -25,8 +25,6 @@ public class Product {
 
     private Double price;
 
-    private String image;
-
     @ManyToOne
     @JoinColumn(name = "size_id")
     private Size size;
@@ -38,6 +36,10 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "season_id")
     private Season season;
+
+    @ManyToOne
+    @JoinColumn(name = "sex_id")
+    private Sex sex;
 
 }
 

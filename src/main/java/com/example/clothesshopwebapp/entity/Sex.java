@@ -9,11 +9,11 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@Table(name = "tbl_country")
+@Table(name = "tbl_sex")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Country {
+public class Sex {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +21,4 @@ public class Country {
     //@NotBlank(message = "Name should not be null")
     @Column(unique=true)
     private String name;
-
-    @Column(unique=true)
-    private String iso;
 }
