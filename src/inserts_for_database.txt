@@ -255,3 +255,23 @@ INSERT INTO tbl_type (name) VALUES ('Dress');
 INSERT INTO tbl_type (name) VALUES ('Trousers');
 INSERT INTO tbl_type (name) VALUES ('Hoodie');
 
+
+INSERT INTO tbl_color (name) VALUES ('Pink');
+INSERT INTO tbl_color (name) VALUES ('Blue');
+INSERT INTO tbl_color (name) VALUES ('Grey');
+INSERT INTO tbl_color (name) VALUES ('Green');
+INSERT INTO tbl_color (name) VALUES ('Yellow');
+INSERT INTO tbl_color (name) VALUES ('Black');
+INSERT INTO tbl_color (name) VALUES ('White');
+INSERT INTO tbl_color (name) VALUES ('Red');
+INSERT INTO tbl_color (name) VALUES ('Brown');
+INSERT INTO tbl_color (name) VALUES ('Orange');
+
+
+INSERT INTO tbl_brand (name) VALUES ('GUCCI');
+INSERT INTO tbl_brand (name) VALUES ('Chanel');
+INSERT INTO tbl_brand (name) VALUES ('Louis Vuitton');
+INSERT INTO tbl_brand (name) VALUES ('Ralph Lauren');
+INSERT INTO tbl_brand (name) VALUES ('ZARA');
+INSERT INTO tbl_brand (name) VALUES ('H&M');
+INSERT INTO tbl_brand (name) VALUES ('Guess');

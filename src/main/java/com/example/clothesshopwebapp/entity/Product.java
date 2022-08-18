@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "tbl_product")
@@ -18,8 +17,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name should not be null")
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
 
     private Integer quantity;
 
@@ -28,6 +28,10 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "size_id")
     private Size size;
+
+    @ManyToOne
+    @JoinColumn(name = "color_id")
+    private Color color;
 
     @ManyToOne
     @JoinColumn(name = "type_id")
