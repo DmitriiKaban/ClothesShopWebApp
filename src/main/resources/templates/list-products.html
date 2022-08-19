@@ -22,10 +22,20 @@
 
 <!--    <a th:href="@{/addEmployeeForm}" class="btn btn-primary mb-2">Add Employee</a>-->
 
-    <table class="table table-bordered table-striped" id="employee-table">
+    <div class="d-flex justify-content-between border border-3 rounded m-5 " th:each="product: ${products}">
+        <img alt="" th:src="@{'/images/' + ${product.images.get(0).image_dir}}" style="height: 400px" id="my_image">
+        <p th:text="${product.brand.getName()} + ${product.type.getName()} + ' for ' + ${product.season.getName()}"></p>
+        <p th:text="'$' + ${product.price} + ' only ' + ${product.quantity} + ' ramain'"></p>
+    </div>
+
+
+    <table class="table table-bordered table-striped text-center" id="employee-table">
         <thead>
         <tr>
-            <th>Product name</th>
+            <th>Image</th>
+            <th>Brand</th>
+            <th>Color</th>
+            <th>Sex</th>
             <th>Size</th>
             <th>Type</th>
             <th>Season</th>
@@ -36,16 +46,18 @@
         </thead>
         <tbody>
         <tr th:each="product: ${products}">
-            <td th:text="${product.getName()}"></td>
+            <td><img alt="" th:src="@{'/images/' + ${product.images.get(0).image_dir}}" style="height: 200px"></td>
+            <td th:text="${product.brand.getName()}"></td>
+            <td th:text="${product.color.getName()}"></td>
+            <td th:text="${product.sex.getName()}"></td>
             <td th:text="${product.size.getName()}"></td>
             <td th:text="${product.type.getName()}"></td>
             <td th:text="${product.season.getName()}"></td>
             <td th:text="${product.quantity}"></td>
             <td th:text="${product.price}"></td>
-<!--            <td><img th:src=""></td>-->
             <td>
-                <a th:href="@{/showUpdateForm(employeeId=${employee.id})}" class="btn btn-info">Add To Cart</a>
-                <a th:href="@{/deleteEmployee(employeeId=${employee.id})}" class="btn btn-danger ml-2">Details</a>
+                <a th:href="@{/details-product(id=${product.id})}" class="btn btn-info">Details</a>
+                <a th:href="@{/addToCart(productId=${product.id})}" class="btn btn-danger ml-2">Add To Cart</a>
             </td>
         </tr>
         </tbody>
@@ -61,7 +73,7 @@
         $("#employee-table").DataTable({
             'aoColumnDefs':[{
                 'bSortable':false,
-                'aTargets': [-1] // columns right to left -1, -2, -3, -4 => -1 is Actions column
+                'aTargets': [-1] // columns right to left -1, -2, -3, ... => -1 is Actions column
             }]
         });
     })

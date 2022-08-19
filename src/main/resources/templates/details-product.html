@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop</title>
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.css"/>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
+</head>
+<body>
+
+<div class="container">
+    <h2>Product details</h2>
+    <hr/>
+
+    <!--    <a th:href="@{/addEmployeeForm}" class="btn btn-primary mb-2">Add Employee</a>-->
+
+
+    <div class="col-md-4 border border-3 rounded m-5">
+        <img alt="" th:src="@{'/images/' + ${product.images.get(0).image_dir}}" style="height: 400px" id="my_image">
+        <p th:text="${product.brand.getName()} + ${product.type.getName()} + ' for ' + ${product.season.getName()}"></p>
+        <p th:text="'$' + ${product.price} + ' only ' + ${product.quantity} + ' ramain'"></p>
+    </div>
+
+<!--    <table class="table table-bordered table-striped text-center" id="employee-table">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>Image</th>-->
+<!--            <th>Brand</th>-->
+<!--            <th>Color</th>-->
+<!--            <th>Sex</th>-->
+<!--            <th>Size</th>-->
+<!--            <th>Type</th>-->
+<!--            <th>Season</th>-->
+<!--            <th>Quantity</th>-->
+<!--            <th>Price</th>-->
+<!--            <th>Actions</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody>-->
+<!--            <td><img alt="" th:src="@{'/images/' + ${product.images.get(0).image_dir}}" style="height: 400px" id="my_image"></td>-->
+<!--            <td th:text="${product.brand.getName()}"></td>-->
+<!--            <td th:text="${product.color.getName()}"></td>-->
+<!--            <td th:text="${product.sex.getName()}"></td>-->
+<!--            <td th:text="${product.size.getName()}"></td>-->
+<!--            <td th:text="${product.type.getName()}"></td>-->
+<!--            <td th:text="${product.season.getName()}"></td>-->
+<!--            <td th:text="${product.quantity}"></td>-->
+<!--            <td th:text="${product.price}"></td>-->
+<!--            <td>-->
+<!--                <a th:href="@{/details-product/id=${product.id}}" class="btn btn-danger ml-2">Add To Cart</a>-->
+<!--            </td>-->
+<!--        </tbody>-->
+<!--    </table>-->
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
+
+<script>
+    var first_image = true;
+    var image_url = $('#my_image').attr('src');
+
+
+    $(document).ready(function(event) {
+        $('#my_image').on({
+            'click': function(){
+                if(first_image){
+                    image_url = image_url.replace('1', '2');
+                    console.log(image_url);
+                    $('#my_image').attr('src', image_url);
+                    first_image = false;
+                }else{
+                    image_url = image_url.replace('2', '1');
+                    console.log(image_url);
+                    $('#my_image').attr('src', image_url);
+                    first_image = true;
+                }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
+
+

@@ -275,3 +275,6 @@ INSERT INTO tbl_brand (name) VALUES ('Ralph Lauren');
 INSERT INTO tbl_brand (name) VALUES ('ZARA');
 INSERT INTO tbl_brand (name) VALUES ('H&M');
 INSERT INTO tbl_brand (name) VALUES ('Guess');
+
+
+INSERT INTO tbl_product (price,quantity,season_id,sex_id,size_id,type_id,color_id,brand_id) VALUES (1500, 15, 3, 1, 2, 6, 4, 5);

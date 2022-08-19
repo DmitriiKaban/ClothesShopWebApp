@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_product")
@@ -44,6 +45,9 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "sex_id")
     private Sex sex;
+
+    @OneToMany(mappedBy = "product")
+    private List<Image> images;
 
 }
 
