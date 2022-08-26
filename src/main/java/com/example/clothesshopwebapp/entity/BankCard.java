@@ -22,7 +22,7 @@ public class BankCard {
     private Integer cvv;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
-    private Customer customer;
+    @JoinColumn(name = "account_id")
+    private Account account;
 
 }

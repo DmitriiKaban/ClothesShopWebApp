@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"  xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="image/x-icon" href="/images/Icons/logo.ico" />
+    <meta name="_csrf" content="${_csrf.token}" />
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" content="${_csrf.headerName}" />
     <title>Shop</title>
 
     <link rel="stylesheet"
@@ -13,15 +17,27 @@
           href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
           crossorigin="anonymous">
+<!--    <link rel="stylesheet" type="text/css" href="details-product-style/style.css">-->
     <style>
         body{
             min-height: 100%;
             display: grid;
             grid-template-rows: 1fr auto;
-            /*min-height: 100%;*/
-            /*display: flex;*/
-            /*flex-direction: column;*/
         }
+        .my_btn_logout{
+            border: none;
+            color: rgba(255,255,255,.5);
+            background: #343a40;
+            margin-top: .5em;
+        }
+        .my_btn_logout:hover{
+            cursor: pointer;
+            color: rgba(255,255,255,.75);
+        }
+        .hidden_images{
+            display: none;
+        }
+
         .my_container{
             display: block;
             min-height: 100%;
@@ -31,6 +47,10 @@
             display: inline-block;
             float: left;
             margin-left: 6em;
+            height: 500px;
+        }
+        .product_img{
+            width: 442px;
             height: 500px;
         }
         .product_info{
@@ -62,7 +82,14 @@
             background:  0 0 no-repeat;
         }
 
-
+        .btn{
+            padding: .5em 1em;
+            color: white !important;
+        }
+        .btn:hover{
+            background: white;
+            color: #333333 !important;
+        }
         .footer{
             /*position: fixed;*/
             /*padding: 10px 10px 0px 10px;*/
@@ -112,23 +139,47 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="#">Clothes Shop</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href="/"><img height="60px" src="/images/bertha.png" alt="Logo"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Catalog</a>
+                <li class="nav-item active">
+                    <a class="nav-link nav_text" th:href="@{/}"><h5>Catalog</h5></a>
+                </li>
+                <li class="nav-item nav_text">
+                    <a class="nav-link" href="/about"><h5>About us</h5></a>
+                </li>
+                <li class="nav-item nav_text">
+                    <a class="nav-link" href="#"><h5>Delivery</h5></a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
+                    <a class="nav-link" href="#"><h5>Contact</h5></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Delivery</a>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}"><h5>Login</h5></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Contact</a>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/register}"><h5>Register</h5></a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link">Hi, <span th:text="${user_name}">Username</span></a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a th:href="@{/cart}">
+                        <img src="/images/Icons/shopping-cart1.ico" width="50px" alt="cart">
+                    </a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()" style="margin-left: 1em">
+                    <form action="#"
+                          th:action="@{/logout}"
+                          method="post">
+                        <button class="my_btn_logout" th:href="@{/logout}"><h5>Logout</h5></button>
+                    </form>
                 </li>
             </ul>
         </div>
@@ -137,23 +188,29 @@
 
 <div class="container my_container">
 
+    <i class="fa-solid fa-cart-shopping"></i>
+    <br>
     <br>
     <br>
     <br>
     <h2 style="text-align: center">Details</h2>
     <hr/>
-
-    <div class="">
+    <div id="hidden_image1" class="hidden_images" th:text="@{'/images/' + ${product.images.get(0).image_dir}}"></div>
+    <div id="hidden_image2" class="hidden_images" th:text="@{'/images/' + ${product.images.get(1).image_dir}}"></div>
+<!--    <a class="btn btn-secondary" th:href="@{/}" style="margin-left: 6em">Back</a>-->
+    <div class="" style="margin-top: 1em">
         <div class="image_side">
             <img alt="" th:src="@{'/images/' + ${product.images.get(0).image_dir}}" class="product_img" id="my_image">
 
                 <div class="flex-gallery">
-                    <div class="item img1" ></div>
+                    <div class="item img1"></div>
                     <div class="item img2"></div>
                 </div>
         </div>
 
         <div class="product_info">
+            <h5 id="productId" style="display: none" th:text="${product.getId()}"></h5>
+            <h5 id="productQty" style="display: none" th:text="1"></h5>
             <h5 th:text="'Type: ' + ${product.type.getName()}"></h5>
             <br>
             <h5 th:text="'Brand: ' + ${product.brand.getName()}"></h5>
@@ -167,75 +224,51 @@
             <h5 th:text="'Sex: ' + ${product.sex.getName()}"></h5>
             <br>
             <h5 th:text="'Price: ' + ${product.price} + '$'"></h5><br><br>
-            <a class="btn btn-secondary btn-lg" style="color: #fff">Add To Cart</a>
+            <a class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;" id="addToCart"><h3>Add To Cart</h3></a>
         </div>
 
     </div>
 </div>
 
-<div class=" container footer">
+<div class="container footer">
     <hr>
     <div class="footer-icons">
         <a href="#">
-            <img src="images/Icons/twitter-128.png" alt="twitter">
+            <img src="/images/Icons/twitter-128.png" alt="twitter">
         </a>
         <a href="#">
-            <img src="images/Icons/facebook-128.png" alt="facebook">
+            <img src="/images/Icons/facebook-128.png" alt="facebook">
         </a>
         <a href="#">
-            <img src="images/Icons/instagram.png" alt="instagram">
+            <img src="/images/Icons/instagram.png" alt="instagram">
         </a>
         <a href="#">
-            <img src="images/Icons/youtube-128.png" alt="youtube">
+            <img src="/images/Icons/youtube-128.png" alt="youtube">
         </a>
         <a href="#">
-            <img src="images/Icons/gmail-128.png" alt="gmail">
+            <img src="/images/Icons/gmail-128.png" alt="gmail">
         </a>
     </div>
 
     <p class="last_p">	&#169; CLOTHES 2022</p>
 </div>
 
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
 
 <script>
-    var first_image = true;
-    var image_url = $('#my_image').attr('src');
-
-    var s_image_url = image_url.replace('1', '2');
-
-
-    $(document).ready(function(event) {
-        $('.img1').css('background-image','url(' + image_url + ')');
-        $('.img2').css('background-image','url(' + s_image_url + ')');
-
-
-        jQuery('.img1').hover(function() {
-            jQuery('#my_image').attr("src", image_url);
-        });
-        jQuery('.img2').hover(function() {
-            jQuery('#my_image').attr("src", s_image_url);
-        });
-
-        $('#my_image').on({
-            'click': function(){
-                if(first_image){
-                    image_url = image_url.replace('1', '2');
-                    console.log(image_url);
-                    $('#my_image').attr('src', image_url);
-                    first_image = false;
-                }else{
-                    image_url = image_url.replace('2', '1');
-                    console.log(image_url);
-                    $('#my_image').attr('src', image_url);
-                    first_image = true;
-                }
-            }
-        });
+    var token = "[[${_csrf.token}]]";
+    var header = "[[${_csrf.headerName}]]";
+    //var header = $("meta[name='_csrf_header']").attr("content");
+    console.log("script " + token + " " + header);
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
     });
+    var productId = "[[${product.id}]]";
 </script>
+
+<script th:src="@{/js/add_to_cart.js}"></script>
+<script th:src="@{/js/moving_images.js}"></script>
 
 </body>
 </html>

@@ -6,18 +6,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "tbl_customer")
+@Table(name = "tbl_account")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Customer {
+public class Account {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     //@NotBlank(message = "First name should not be null")
@@ -25,10 +26,18 @@ public class Customer {
 
     private String lastName;
 
+    private String password;
+
     @Email
     private String email;
 
     @ManyToOne
     @JoinColumn(name = "address_id")
     private Address address;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "account_authority",
+            joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
+    private Set<Authority> authorities = new HashSet<>();
 }

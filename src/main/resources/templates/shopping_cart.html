@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Shop</title>
+    <link rel="shortcut icon" type="image/x-icon" href="/images/Icons/logo.ico" />
+    <link rel="stylesheet"
+          type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.css"/>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+          crossorigin="anonymous">
+    <!--    <link rel="stylesheet" type="text/css" href="list-product-style/style.css">-->
+    <style>
+        body {
+            min-height: 100%;
+            display: grid;
+            grid-template-rows: 1fr auto;
+        }
+
+        .my_container {
+            display: block;
+            min-height: 100%;
+            margin-bottom: 6em;
+        }
+
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+        }
+
+        .footer-icons a img {
+            display: inline-block;
+            border: 1px solid grey;
+            margin: .3em;
+
+            opacity: 0.6; /* для других браузеров */
+            filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60);
+            -moz-opacity: 0.6; /* Mozilla 1.6 è íèæå */
+            -khtml-opacity: 0.6; /* Konqueror 3.1, Safari 1.1 */
+            filter: alpha(opacity=60); /* IE 5.5+*/
+
+            border-radius: 50%;
+            padding: .5em;
+            width: 40px;
+            height: 40px;
+        }
+
+        .footer-icons a:hover img {
+            opacity: 1;
+            /* CSS3 - Mozilla 1.7b +, Firefox 0.9 +,
+                                Safari 1.2+, Opera 9 */
+
+            /* для других браузеров */
+            filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+            -moz-opacity: 1; /* Mozilla 1.6 è íèæå */
+            -khtml-opacity: 1; /* Konqueror 3.1, Safari 1.1 */
+            filter: alpha(opacity=100); /* IE 5.5+*/
+        }
+
+        .last_p {
+            text-align: center;
+            margin: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/"><img height="60px" src="/images/bertha.png" alt="Logo"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
+                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item active">
+                    <a class="nav-link nav_text" th:href="@{/}"><h5>Catalog</h5></a>
+                </li>
+                <li class="nav-item nav_text">
+                    <a class="nav-link" href="/about"><h5>About us</h5></a>
+                </li>
+                <li class="nav-item nav_text">
+                    <a class="nav-link" href="#"><h5>Delivery</h5></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><h5>Contact</h5></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/login}"><h5>Login</h5></a>
+                </li>
+                <li class="nav-item" sec:authorize="!isAuthenticated()">
+                    <a class="nav-link" th:href="@{/register}"><h5>Register</h5></a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link">Hi, <span th:text="${user_name}">Username</span></a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()" style="margin-left: 3em">
+                    <form action="#"
+                          th:action="@{/logout}"
+                          method="post">
+                        <button class=" btn btn-secondary" th:href="@{/logout}"><h5>Logout</h5></button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container my_container">
+    <h2 style="margin-top: 3em; text-align: center">Shopping Cart</h2>
+    <hr/>
+        <table class="table table-bordered table-striped text-center" id="employee-table"
+        th:unless="${#lists.isEmpty(cartItems)}">
+            <thead>
+            <tr>
+                <th>Image</th>
+                <th>Brand</th>
+                <th>Color</th>
+                <th>Sex</th>
+                <th>Size</th>
+                <th>Type</th>
+                <th>Season</th>
+                <th>Quantity</th>
+                <th>Price for one unit</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, status: ${cartItems}" th:id="'row' + ${status.count}">
+                <span style="display: none">[[${status.count}]]</span>
+                <td><img alt="" th:src="@{'/images/' + ${item.product.images.get(0).image_dir}}" style="height: 200px"></td>
+                <td th:text="${item.product.brand.getName()}"></td>
+                <td th:text="${item.product.color.getName()}"></td>
+                <td th:text="${item.product.sex.getName()}"></td>
+                <td th:text="${item.product.size.getName()}"></td>
+                <td th:text="${item.product.type.getName()}"></td>
+                <td th:text="${item.product.season.getName()}"></td>
+                <td th:replace="quantity_controller :: quantity_control(${item.quantity}, ${item.product.id})"></td>
+                <td>
+                    <small class="text-muted" th:text="'* $' + ${item.product.price}">$[[${product.price}]]</small><br>
+<!--                    <span th:text="'*'"></span><br>-->
+<!--                    <span th:text="${item.quantity}"></span><br>-->
+<!--                    <span><strong>=</strong><strong th:text="${item.getSubtotal()} + '$'">$[[${item.subtotal}]]</strong></span>-->
+                    <span>=<strong>$</strong>
+                        <strong th:id="'subtotal' + ${item.product.id}" class="productSubtotal">[[${item.subtotal}]]</strong>
+                    </span>
+                </td>
+                <td>
+                    <a th:href="'/products/' + ${item.product.id}" style="margin-top: 1em" class="btn btn-info">Details</a>
+                    <a th:rowNumber="${status.count}" th:href="@{'/cart/remove/' + ${item.product.id}}" style="margin-top: 1em" class="btn btn-danger ml-2 link-remove">Remove from Cart</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    <div class="float-right"  th:unless="${#lists.isEmpty(cartItems)}">
+        <div>
+            <span class="h3">Estimated total: </span><span class="h2 totalAmount">[Total Amount]</span>
+        </div>
+        <button class="btn btn-secondary mt-2 ml-4 p-2">Check Out</button>
+    </div>
+
+
+    <div th:if="${#lists.isEmpty(cartItems)}">
+        <h3 style="text-align: center">Your cart is empty...</h3>
+    </div>
+</div>
+
+
+
+<div class=" container footer">
+    <hr>
+    <div class="footer-icons">
+        <a href="#">
+            <img src="images/Icons/twitter-128.png" alt="twitter">
+        </a>
+        <a href="#">
+            <img src="images/Icons/facebook-128.png" alt="facebook">
+        </a>
+        <a href="#">
+            <img src="images/Icons/instagram.png" alt="instagram">
+        </a>
+        <a href="#">
+            <img src="images/Icons/youtube-128.png" alt="youtube">
+        </a>
+        <a href="#">
+            <img src="images/Icons/gmail-128.png" alt="gmail">
+        </a>
+    </div>
+
+    <p class="last_p"> &#169; CLOTHES 2022</p>
+</div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
+<script th:src="@{/js/shopping_cart.js}"></script>
+
+<script>
+    var token = "[[${_csrf.token}]]";
+    var header = "[[${_csrf.headerName}]]";
+    console.log("script " + token + " " + header);
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+</script>
+
+
+</body>
+</html>
+
+

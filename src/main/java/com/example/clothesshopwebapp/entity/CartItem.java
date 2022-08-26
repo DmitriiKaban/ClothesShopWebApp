@@ -8,30 +8,28 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "tbl_order_line")
+@Table(name = "tbl_cart")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderLine {
+public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long Id;
 
+    @ManyToOne
     @JoinColumn(name = "product_id")
-    @OneToOne
     private Product product;
 
-
-    @JoinColumn(name = "account_id")
     @ManyToOne
+    @JoinColumn(name = "account_id")
     private Account account;
 
-
-    @JoinColumn(name = "order_id")
-    @ManyToOne
-    private Order order;
-
-    private Double price;
-
     private Integer quantity;
+
+    @Transient
+    public double getSubtotal(){
+        return this.product.getPrice() * quantity;
+    }
+
 }

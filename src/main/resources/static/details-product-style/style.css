@@ -1,39 +1,3 @@
-.product_wrap{
-    display: block;
-    width: 100%;
-    padding: .5em;
-}
-
-.product_wrapper_inner{
-    display: inline-block;
-    width: 100%;
-    border: 2px solid #333;
-
-    color: black;
-
-    text-align: center;
-}
-.product_wrapper_inner:hover{
-    text-decoration: none;
-}
-
-.product_container{
-    float: left;
-    width: 25%;
-    padding: 1em;
-}
-
-.product_text{
-    margin-top: .5em;
-}
-
-img{
-    object-fit: cover;
-    width: 100%;
-    border-bottom: 2px solid #333;
-    /*border: 2px solid #333;*/
-}
-
 body{
     min-height: 100%;
     display: grid;
@@ -82,14 +46,16 @@ body{
     background:  0 0 no-repeat;
 }
 
+.btn{
+    padding: .5em 1em;
+    color: white !important;
+}
+.btn:hover{
+    background: white;
+    color: #333333 !important;
+}
 
 .footer{
-    /*position: fixed;*/
-    /*padding: 10px 10px 0px 10px;*/
-    /*bottom: -10em;*/
-    /*width: 100%;*/
-    /*!* Height of the footer*!*/
-    /*height: 8em;*/
     grid-row-start: 2;
     grid-row-end: 3;
 }
@@ -115,7 +81,7 @@ body{
 }
 .footer-icons a:hover img{
     opacity: 1;         /* CSS3 - Mozilla 1.7b +, Firefox 0.9 +,
-                     Safari 1.2+, Opera 9 */
+                             Safari 1.2+, Opera 9 */
 
     /* для других браузеров */
     filter: progid: DXImageTransform.Microsoft.Alpha(opacity=100);
