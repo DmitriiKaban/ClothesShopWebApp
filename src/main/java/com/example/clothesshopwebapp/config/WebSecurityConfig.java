@@ -47,7 +47,8 @@ public class WebSecurityConfig {
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout")
                 .and()
-                .httpBasic();
+                .httpBasic()
+                .authenticationEntryPoint(new NoPopupBasicAuthenticationEntryPoint());
 
         return http.build();
     }

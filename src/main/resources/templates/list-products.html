@@ -2,348 +2,49 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-    <title>Shop</title>
-    <link rel="shortcut icon" type="image/x-icon" href="/images/Icons/logo.ico" />
-
-    <link rel="stylesheet"
-          type="text/css"
-          href="https://cdn.datatables.net/v/bs4/dt-1.12.1/datatables.min.css"/>
-
-    <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-          crossorigin="anonymous">
-    <!--    <link rel="stylesheet" type="text/css" href="list-product-style/style.css">-->
-    <style>
-        body {
-            min-height: 100%;
-            display: grid;
-            grid-template-rows: 1fr auto;
-        }
-
-        .my_btn_logout{
-            border: none;
-            color: rgba(255,255,255,.5);
-            background: #343a40;
-            margin-top: .5em;
-        }
-        .my_btn_logout:hover{
-            cursor: pointer;
-            color: rgba(255,255,255,.75);
-        }
-
-        .my_container {
-            display: block;
-            min-height: 100%;
-            margin-bottom: 6em;
-        }
-
-        .product_wrap {
-            display: block;
-            width: 100%;
-            height: 100%;
-            padding: .5em;
-        }
-
-        .product_wrapper_inner {
-            display: inline-block;
-            width: 100%;
-            border: 2px solid #333;
-
-            color: black;
-
-            text-align: center;
-        }
-
-        .product_wrapper_inner:hover {
-            text-decoration: none;
-        }
-
-        .product_container {
-            float: left;
-            width: 25%;
-            padding: 1em;
-        }
-
-        .product_text {
-            margin-top: .5em;
-        }
-
-        .image {
-            object-fit: cover;
-            width: 100%;
-            border-bottom: 2px solid #333;
-        }
-
-        /*.footer{*/
-        /*    !*position: fixed;*!*/
-        /*    !*padding: 10px 10px 0px 10px;*!*/
-        /*    !*bottom: -10em;*!*/
-        /*    !*width: 100%;*!*/
-        /*    !*!* Height of the footer*!*!*/
-        /*    !*height: 8em;*!*/
-        /*    !*float: bottom;*!*/
-        /*    grid-row-start: 2;*/
-        /*    grid-row-end: 3;*/
-        /*}*/
-        .footer-icons {
-            display: flex;
-            justify-content: center;
-        }
-
-        .footer-icons a img {
-            display: inline-block;
-            border: 1px solid grey;
-            margin: .3em;
-
-            opacity: 0.6; /* для других браузеров */
-            filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60);
-            -moz-opacity: 0.6; /* Mozilla 1.6 è íèæå */
-            -khtml-opacity: 0.6; /* Konqueror 3.1, Safari 1.1 */
-            filter: alpha(opacity=60); /* IE 5.5+*/
-
-            border-radius: 50%;
-            padding: .5em;
-            width: 40px;
-            height: 40px;
-        }
-
-        .footer-icons a:hover img {
-            opacity: 1;
-            /* CSS3 - Mozilla 1.7b +, Firefox 0.9 +,
-                                Safari 1.2+, Opera 9 */
-
-            /* для других браузеров */
-            filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
-            -moz-opacity: 1; /* Mozilla 1.6 è íèæå */
-            -khtml-opacity: 1; /* Konqueror 3.1, Safari 1.1 */
-            filter: alpha(opacity=100); /* IE 5.5+*/
-        }
-
-        .last_p {
-            text-align: center;
-            margin: 1.5em;
-        }
-    </style>
-</head>
+<head th:replace="fragments :: html_head_main"></head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-    <div class="container">
-        <a class="navbar-brand" href="/"><img height="60px" src="/images/bertha.png" alt="Logo"></a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
-                aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item active">
-                    <a class="nav-link nav_text" th:href="@{/}"><h5>Catalog</h5></a>
-                </li>
-                <li class="nav-item nav_text">
-                    <a class="nav-link" href="/about"><h5>About us</h5></a>
-                </li>
-                <li class="nav-item nav_text">
-                    <a class="nav-link" href="#"><h5>Delivery</h5></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#"><h5>Contact</h5></a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link" th:href="@{/login}"><h5>Login</h5></a>
-                </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a class="nav-link" th:href="@{/register}"><h5>Register</h5></a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link">Hi, <span th:text="${user_name}">Username</span></a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a th:href="@{/cart}">
-                        <img src="/images/Icons/shopping-cart1.ico" width="50px" alt="cart">
-                    </a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()" style="margin-left: 1em">
-                    <form action="#"
-                          th:action="@{/logout}"
-                          method="post">
-                        <button class="my_btn_logout" th:href="@{/logout}"><h5>Logout</h5></button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </div>
+<!--Top navigation-->
+<nav th:replace="fragments :: html_top_navigation_bar_main"></nav>
+
+<!--Main content-->
+<div th:replace="fragments :: html_products_main"></div>
+
+<!-- Page Navigation -->
+<nav th:if="${totalPages > 1}">
+    <ul class="pagination justify-content-center">
+        <li class="page-item">
+            <a style="color: #343a40" class="page-link" href="#" tabindex="-1" aria-disabled="true" th:if="${currentPage > 1}"
+               th:href="@{'/page/' + ${currentPage - 1} + '?sortField=price' + '&sortDirection=asc' + '&brand=' + ${brand != null ? brand : ''}
+                       + '&color=' + ${color != null ? color : ''} + '&type=' + ${type != null ? type : ''} + '&sex=' + ${sex != null ? sex : ''}
+                       +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }"> Previous </a>
+            <span style="color: #343a40; " class="page-link" th:unless="${currentPage > 1}"> Previous </span>
+        </li>
+        <span style="color: #343a40" th:each="i: ${#numbers.sequence(1, totalPages)}">
+            <li>
+            <a style="color: #343a40" class="page-link" th:if="${i != currentPage}" th:href="@{'/page/' + ${i} + '?sortField=price' + '&sortDirection=asc' + '&brand=' + ${brand != null ? brand : ''}
+                       + '&color=' + ${color != null ? color : ''} + '&type=' + ${type != null ? type : ''} + '&sex=' + ${sex != null ? sex : ''}
+                       +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }">[[${i}]] </a>
+            <span style="color: #343a40; background: lightgray" class="page-link" th:unless="${i != currentPage}">[[${i}]] </span>
+            </li>
+        </span>
+        <li class="page-item">
+            <a style="color: #343a40" class="page-link" th:if="${currentPage < totalPages}"
+               th:href="@{'/page/' + ${currentPage + 1} + '?sortField=price' + '&sortDirection=asc' + '&brand=' + ${brand != null ? brand : ''}
+                       + '&color=' + ${color != null ? color : ''} + '&type=' + ${type != null ? type : ''} + '&sex=' + ${sex != null ? sex : ''}
+                       +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }"> Next </a>
+            <span style="color: #343a40" class="page-link" th:unless="${currentPage < totalPages}"> Next </span>
+        </li>
+    </ul>
 </nav>
 
-
-<div class="container my_container">
-
-    <h2 style="margin-top: 3em; text-align: center">Catalog</h2>
-    <hr/>
-    <!--    <form class="ui form" method="POST" th:action="${productDetails}" th:object="${product}" id="form_find_sort">-->
-
-    <form class="ui form" method="GET" id="form_find_sort" style="text-align: center"><!--th:action="${productDetails}" th:object="${product}"-->
-        <h5 style="display: inline-block; margin-right: 2em">Choose a brand: </h5>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="zara" value="ZARA">
-            <label class="form-check-label" for="zara">Zara</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="gucci" value="GUCCI">
-            <label class="form-check-label" for="gucci">GUCCI</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="Chanel" value="Chanel">
-            <label class="form-check-label" for="Chanel">Chanel</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="LouisVuitton" value="Louis Vuitton">
-            <label class="form-check-label" for="LouisVuitton">GUCCI</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="RalphLauren" value="Ralph Lauren">
-            <label class="form-check-label" for="RalphLauren">Ralph Lauren</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="Valentino" value="Valentino">
-            <label class="form-check-label" for="Valentino">Valentino</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="Guess" value="Guess">
-            <label class="form-check-label" for="Guess">Guess</label>
-        </div>
-        <input class="btn btn-secondary" type="submit" value="Find">
-    </form>
-    <hr>
-
-    <div class="product_wrap">
-        <div class="product_container" th:each="product: ${products}">
-            <a class="product_wrapper_inner" th:href="'/products/' + ${product.id}">
-                <!--            <img class="img_product" th:alt="${product.id}" src="/images/man_blue_shirt1.png">-->
-                <!--                     th:src="${product.images != null ? '/images/' + product.images.get(0).image_dir : '/images/bertha.png'}"-->
-                <img class="image"
-                     th:src="${'/images/' + product.images.get(0).image_dir}"
-                     th:alt="${product.id}"/>
-                <!--            th:src="@{'/images/' + ${product.images.get(0).image_dir}}"-->
-                <!--        <hr/>-->
-                <div class="product_text">
-                    <h5 th:text="${product.brand.getName()} + ' ' + ${product.type.getName()} "></h5>
-                    <h6 th:text="${product.season.getName()}"></h6>
-                    <p th:text="'$' + ${product.price}"></p>
-<!--                    <a class="cart_href" th:href="@{/cart}">Add to cart</a>-->
-<!--                    <p><a th:href="@{'/products/' + ${product.id} + '/edit'}">Edit</a></p>-->
-<!--                    <p><a th:href="@{'/products/' + ${product.id} + '/delete'}">Delete</a></p>-->
-                </div>
-            </a>
-        </div>
-    </div>
-
-</div>
-
-
-<div class=" container footer">
-    <hr>
-    <div class="footer-icons">
-        <a href="#">
-            <img src="/images/Icons/twitter-128.png" alt="twitter">
-        </a>
-        <a href="#">
-            <img src="/images/Icons/facebook-128.png" alt="facebook">
-        </a>
-        <a href="#">
-            <img src="/images/Icons/instagram.png" alt="instagram">
-        </a>
-        <a href="#">
-            <img src="/images/Icons/youtube-128.png" alt="youtube">
-        </a>
-        <a href="#">
-            <img src="/images/Icons/gmail-128.png" alt="gmail">
-        </a>
-    </div>
-
-    <p class="last_p"> &#169; CLOTHES 2022</p>
-</div>
-
+<!--Footer-->
+<div th:replace="fragments :: footer"></div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
 <script th:src="@{/js/add_to_cart.js}"/>
 
-<script>
-    $(document).ready(function (event) {
-        $(".img_product").on("error", function () {
-            $(this).attr("src", "/images/bertha.png");
-        });
-
-        $("#form_find_sort").submit(function () {
-            var url = $(location).attr("href");
-            url = url.substring(0, 22) + '?brand=';
-
-            if ($('#zara').is(':checked')) {
-                url += 'ZARA,';
-            }
-            if ($('#gucci').is(':checked')) {
-                url += 'GUCCI,';
-            }
-            if ($('#Chanel').is(':checked')) {
-                url += 'Chanel,';
-            }
-            if ($('#LouisVuitton').is(':checked')) {
-                url += 'Louis Vuitton,';
-            }
-            if ($('#RalphLauren').is(':checked')) {
-                url += 'Ralph Lauren,';
-            }
-            if ($('#Valentino').is(':checked')) {
-                url += 'Valentino,';
-            }
-            if ($('#Guess').is(':checked')) {
-                url += 'Guess,';
-            }
-            url = url.substring(url, url.length - 1);
-            window.open(url, "_blank");
-        });
-    });
-</script>
-
 </body>
 </html>
-
-
-<!--    <table class="table table-bordered table-striped text-center" id="employee-table">-->
-<!--        <thead>-->
-<!--        <tr>-->
-<!--            <th>Image</th>-->
-<!--            <th>Brand</th>-->
-<!--            <th>Color</th>-->
-<!--            <th>Sex</th>-->
-<!--            <th>Size</th>-->
-<!--            <th>Type</th>-->
-<!--            <th>Season</th>-->
-<!--            <th>Quantity</th>-->
-<!--            <th>Price</th>-->
-<!--            <th>Actions</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-<!--        <tbody>-->
-<!--        <tr th:each="product: ${products}">-->
-<!--            <td><img alt="" th:src="@{'/images/' + ${product.images.get(0).image_dir}}" style="height: 200px"></td>-->
-<!--            <td th:text="${product.brand.getName()}"></td>-->
-<!--            <td th:text="${product.color.getName()}"></td>-->
-<!--            <td th:text="${product.sex.getName()}"></td>-->
-<!--            <td th:text="${product.size.getName()}"></td>-->
-<!--            <td th:text="${product.type.getName()}"></td>-->
-<!--            <td th:text="${product.season.getName()}"></td>-->
-<!--            <td th:text="${product.quantity}"></td>-->
-<!--            <td th:text="${product.price} + '$'"></td>-->
-<!--            <td>-->
-<!--                <a th:href="@{/details-product(id=${product.id})}" class="btn btn-info">Details</a>-->
-<!--                <a th:href="@{/addToCart(productId=${product.id})}" class="btn btn-danger ml-2">Add To Cart</a>-->
-<!--            </td>-->
-<!--        </tr>-->
-<!--        </tbody>-->
-<!--    </table>-->

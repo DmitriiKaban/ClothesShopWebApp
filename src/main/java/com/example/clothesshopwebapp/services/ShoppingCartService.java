@@ -58,4 +58,6 @@ public class ShoppingCartService {
     public void removeProduct(Long productId, Account account){
         cartItemRepository.deleteByAccountAndProduct(account.getId(), productId);
     }
+
+
 }

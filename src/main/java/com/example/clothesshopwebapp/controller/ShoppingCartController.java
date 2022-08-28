@@ -18,7 +18,6 @@ import java.util.Optional;
 
 @Controller
 public class ShoppingCartController {
-
     @Autowired
     private ShoppingCartService cartService;
 
@@ -41,7 +40,9 @@ public class ShoppingCartController {
         List<CartItem> cartItems = cartService.listCartItems(account.get());
 
         if(username != null){
-            model.addAttribute("user_name", username);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            Account acc = accountService.findOneByEmail(auth.getName()).get();
+            model.addAttribute("user_name", acc.getFirstName() + ' ' + acc.getLastName());
         }
 
         model.addAttribute("cartItems", cartItems);

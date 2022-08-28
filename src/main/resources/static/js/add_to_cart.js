@@ -6,13 +6,12 @@ $(document).ready(function (){
 });
 
 function addToCart(){
-    // productId = $('#productId').text();
     productQty = $('#productQty').text();
 
     let _url = "/cart/add/" + productId + "/" + productQty + "/";
 
-    console.log(header + " " + token);
-    alert(productQty + " items were added to cart");
+    // console.log(header + " " + token);
+    // alert(productQty + " items were added to cart");
     $.ajax({
         type: "POST",
         url: _url,
@@ -22,6 +21,8 @@ function addToCart(){
 
         // have to add the function
     });
+    $("#alert_item_added").css("display", "block");
+
     // .done(function(response){
     //     $("#modalTitle").text("Shopping cart");
     //     $("#modalBody").text("");
