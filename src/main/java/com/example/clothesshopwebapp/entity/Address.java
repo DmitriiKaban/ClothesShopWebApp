@@ -22,6 +22,8 @@ public class Address {
 
     private String house;
 
+    private String city;
+
     private Integer apartment;
 
     @ManyToOne

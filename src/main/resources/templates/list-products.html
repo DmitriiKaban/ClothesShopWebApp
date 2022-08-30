@@ -11,14 +11,19 @@
 <!--Main content-->
 <div th:replace="fragments :: html_products_main"></div>
 
+<!--Table with products for admin-->
+<div th:replace="fragments :: html_products_main_admin" sec:authorize="hasAnyAuthority('ROLE_ADMIN')" class="container"/>
+
 <!-- Page Navigation -->
 <nav th:if="${totalPages > 1}">
     <ul class="pagination justify-content-center">
         <li class="page-item">
-            <a style="color: #343a40" class="page-link" href="#" tabindex="-1" aria-disabled="true" th:if="${currentPage > 1}"
+            <a style="color: #343a40" class="page-link" href="#" tabindex="-1" aria-disabled="true"
+               th:if="${currentPage > 1}"
                th:href="@{'/page/' + ${currentPage - 1} + '?sortField=price' + '&sortDirection=asc' + '&brand=' + ${brand != null ? brand : ''}
                        + '&color=' + ${color != null ? color : ''} + '&type=' + ${type != null ? type : ''} + '&sex=' + ${sex != null ? sex : ''}
-                       +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }"> Previous </a>
+                       +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }">
+                Previous </a>
             <span style="color: #343a40; " class="page-link" th:unless="${currentPage > 1}"> Previous </span>
         </li>
         <span style="color: #343a40" th:each="i: ${#numbers.sequence(1, totalPages)}">
@@ -33,7 +38,8 @@
             <a style="color: #343a40" class="page-link" th:if="${currentPage < totalPages}"
                th:href="@{'/page/' + ${currentPage + 1} + '?sortField=price' + '&sortDirection=asc' + '&brand=' + ${brand != null ? brand : ''}
                        + '&color=' + ${color != null ? color : ''} + '&type=' + ${type != null ? type : ''} + '&sex=' + ${sex != null ? sex : ''}
-                       +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }"> Next </a>
+                       +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }">
+                Next </a>
             <span style="color: #343a40" class="page-link" th:unless="${currentPage < totalPages}"> Next </span>
         </li>
     </ul>
@@ -45,6 +51,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
 <script th:src="@{/js/add_to_cart.js}"/>
+
+<script>
+    $(document).ready(function() {
+        $("#employee-table").DataTable({
+            'aoColumnDefs':[{
+                'bSortable':false,
+                'aTargets': [-1] // columns right to left -1, -2, -3, -4 => -1 is Actions column
+            }]
+        });
+    })
+</script>
 
 </body>
 </html>

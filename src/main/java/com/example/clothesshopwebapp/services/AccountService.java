@@ -43,7 +43,4 @@ public class AccountService {
         return accountRepository.findOneByEmailIgnoreCase(email);
     }
 
-//    public String currentUserName(Authentication authentication) {
-//        return authentication.getName();
-//    }
 }

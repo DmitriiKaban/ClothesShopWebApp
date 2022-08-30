@@ -9,6 +9,7 @@ target/
 *.iws
 *.iml
 *.ipr
+*.properties
 
 ### VS Code ###
 .vscode/

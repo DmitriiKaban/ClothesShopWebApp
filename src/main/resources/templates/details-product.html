@@ -47,7 +47,10 @@
             <br>
             <h5 th:text="'Price: ' + ${product.price} + '$'"></h5><br><br>
             <h4 id="alert_item_added" style="display: none; color: green; font-weight: 500;">Item has been added to the cart!</h4>
-            <a class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;" id="addToCart"><h3>Add To Cart</h3></a>
+            <a th:href="@{/login}" class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;"><h3>Add To Cart</h3></a>
+            <a sec:authorize="hasAnyRole('ROLE_USER')" th:if="${qty > 0}" class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;" id="addToCart"><h3>Add To Cart</h3></a>
+            <h4 th:unless="${qty > 0}" class="text-danger">Product is out of stock!</h4>
+            <a sec:authorize="hasAnyRole('ROLE_USER')" th:unless="${qty > 0}" class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;"><h3>Add To Cart</h3></a>
         </div>
 
     </div>

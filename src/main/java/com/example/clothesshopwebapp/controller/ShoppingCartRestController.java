@@ -12,9 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Optional;
 
 @Controller
 public class ShoppingCartRestController {
@@ -27,22 +24,17 @@ public class ShoppingCartRestController {
     @PostMapping("/cart/add/{id}/{qty}")
     public String addProductToCart(@PathVariable("id") Long id, @PathVariable("qty") Integer qty,
                                          @AuthenticationPrincipal Authentication authentication){
-        System.out.println("Add product to cart!" + id + " " + " qty = " + qty);
+        System.out.println("Add product to cart! Id = " + id + ", " + " qty = " + qty);
         Authentication loggedInUser = SecurityContextHolder.getContext().getAuthentication();
 
-//        if(authentication == null || authentication instanceof AnonymousAuthenticationToken){
-//            return "You must login to add product to shopping cart";
-//        }
         String username = loggedInUser.getName();
         Account account = accountService.findOneByEmail(username).get();
 
         Integer addedQuantity = shoppingCartService.addProduct(id, qty, account);
 
-        System.out.println("Added quantity " + addedQuantity);
 
         return addedQuantity + " item(s) of the product were added to shopping cart.";
     }
-
     @PostMapping("/cart/update/{id}/{qty}")
     @ResponseBody
     public String updateQuantity(@PathVariable("id") Long id, @PathVariable("qty") Integer qty, @AuthenticationPrincipal Authentication authentication){
@@ -57,7 +49,6 @@ public class ShoppingCartRestController {
 
         return String.valueOf(subtotal);
     }
-
     @PostMapping("/cart/remove/{id}")
     @ResponseBody
     public String removeProductFromCart(@PathVariable("id") Long id, @AuthenticationPrincipal Authentication authentication){

@@ -31,10 +31,6 @@ public class Account {
     @Email
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "address_id")
-    private Address address;
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "account_authority",
             joinColumns = {@JoinColumn(name = "account_id", referencedColumnName = "id")},

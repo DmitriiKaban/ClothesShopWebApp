@@ -20,4 +20,8 @@ public class Order {
     private Long id;
 
     private Date date;
+
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
 }

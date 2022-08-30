@@ -212,10 +212,10 @@
         </select>
         <br>
         <label for="price">Price:</label><br>
-        <input type="number" id="price" th:field="*{price}">
+        <input type="number" id="price" th:field="*{price}" min="1">
         <br>
         <label for="qta">Quantity:</label><br>
-        <input type="number" id="qta" th:field="*{quantity}"><br>
+        <input type="number" id="qta" th:field="*{quantity}" min="0"><br>
         <br>
         <label for="image1">First image:</label><br>
         <input type="file" id="image1" name="img1"><br>
@@ -229,28 +229,6 @@
 
 </div>
 
-<div class=" container footer">
-    <hr>
-    <div class="footer-icons">
-        <a href="#">
-            <img src="images/Icons/twitter-128.png" alt="twitter">
-        </a>
-        <a href="#">
-            <img src="images/Icons/facebook-128.png" alt="facebook">
-        </a>
-        <a href="#">
-            <img src="images/Icons/instagram.png" alt="instagram">
-        </a>
-        <a href="#">
-            <img src="images/Icons/youtube-128.png" alt="youtube">
-        </a>
-        <a href="#">
-            <img src="images/Icons/gmail-128.png" alt="gmail">
-        </a>
-    </div>
-
-    <p class="last_p"> &#169; CLOTHES 2022</p>
-</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>

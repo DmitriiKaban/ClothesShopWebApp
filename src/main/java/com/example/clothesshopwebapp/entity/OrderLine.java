@@ -26,7 +26,6 @@ public class OrderLine {
     @ManyToOne
     private Account account;
 
-
     @JoinColumn(name = "order_id")
     @ManyToOne
     private Order order;

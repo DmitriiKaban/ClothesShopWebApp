@@ -22,7 +22,7 @@ public class BankCard {
     private String firstName;
     private String lastName;
 
-    private Integer code;
+    private Long cardNumber;
 
     @Min(value=1, message="Month must be equal or greater than 1")
     @Max(value=12, message="Month must be equal or less than 12")
