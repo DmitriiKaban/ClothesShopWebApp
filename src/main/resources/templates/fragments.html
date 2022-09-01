@@ -21,6 +21,9 @@
           crossorigin="anonymous">
     <style>
         body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -158,6 +161,83 @@
             text-align: center;
             margin: 1.5em;
         }
+         .story {
+             display: block;
+             overflow:hidden;
+         }
+
+        .story.second .info {
+            float: right;
+
+            padding: 0em 2em;
+        }
+
+        .story.third .info {
+            float: left;
+
+            padding: 0em 2em;
+        }
+
+        .info {
+            display: inline-block;
+            float: left;
+
+            margin-left: 3em;
+
+            width: 50%;
+            padding: 2em;
+        }
+
+        .info h2 {
+            margin: 0em 0em ;
+            font-size: 3em;
+
+            font-weight: 300;
+        }
+
+        .info h3 {
+            margin: 1em 0;
+            font-size: 2em;
+
+            font-weight: 300;
+        }
+
+        .info p {
+            margin: 1em 0;
+        }
+
+
+        .info .btn {
+            margin: 1em auto;
+            padding: .5em;
+            font-size: 1em;
+
+            text-decoration: none;
+            color: grey;
+
+            display: inline-block;
+
+            border: 3px solid grey;
+            border-radius: 5px;
+        }
+
+        .story-img {
+            /*float: right;*/
+            /*height: 100%;*/
+            /*width: 40%;*/
+            /*margin-top: -1px;*/
+
+
+            height: auto;
+            max-height: 100%;
+
+            width: auto;
+            max-width: 40%;
+        }
+
+        .story.second .story-img {
+            float: left;
+        }
     </style>
 </head>
 
@@ -184,7 +264,9 @@
         }
 
         .cart_items_number {
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             padding: 0.15em;
             background: red;
             color: white;
@@ -215,7 +297,7 @@
         .my_container {
             display: block;
             min-height: 100%;
-            margin-bottom: 10em;
+            margin-bottom: 1em;
         }
 
         .image_side {
@@ -246,6 +328,7 @@
             flex: 20%;
             box-shadow: 0 0 6px 2px #000;
             margin: 1px;
+            /*scale: 70%;*/
 
             transition: flex 500ms ease;
         }
@@ -260,7 +343,7 @@
         }
 
         .img2 {
-            background: 0 0 no-repeat;
+            background-position: 50% 50%;
         }
 
         .btn {
@@ -688,30 +771,28 @@
     </table>
 </div>
 
-<div th:fragment="footer">
-
-    <div class="container footer">
-        <hr>
-        <div class="footer-icons">
-            <a href="#">
-                <img src="/images/Icons/twitter-128.png" alt="twitter">
-            </a>
-            <a href="#">
-                <img src="/images/Icons/facebook-128.png" alt="facebook">
-            </a>
-            <a href="#">
-                <img src="/images/Icons/instagram.png" alt="instagram">
-            </a>
-            <a href="#">
-                <img src="/images/Icons/youtube-128.png" alt="youtube">
-            </a>
-            <a href="#">
-                <img src="/images/Icons/gmail-128.png" alt="gmail">
-            </a>
-        </div>
-
-        <p class="last_p"> &#169; CLOTHES 2022</p>
+<!--Footer-->
+<div th:fragment="footer" class="container footer">
+    <hr>
+    <div class="footer-icons">
+        <a href="#">
+            <img src="/images/Icons/twitter-128.png" alt="twitter">
+        </a>
+        <a href="#">
+            <img src="/images/Icons/facebook-128.png" alt="facebook">
+        </a>
+        <a href="#">
+            <img src="/images/Icons/instagram.png" alt="instagram">
+        </a>
+        <a href="#">
+            <img src="/images/Icons/youtube-128.png" alt="youtube">
+        </a>
+        <a href="#">
+            <img src="/images/Icons/gmail-128.png" alt="gmail">
+        </a>
     </div>
+
+    <p class="last_p"> &#169; BERTHA 2022</p>
 </div>
 
 <div th:fragment="standard_modal" id="modalWindow" class="modal fade text-center">

@@ -9,10 +9,10 @@
 <nav th:replace="fragments :: html_top_navigation_bar_main"></nav>
 
 <!--Main content-->
-<div th:replace="fragments :: html_products_main"></div>
+<div sec:authorize="!isAuthenticated() || hasAnyAuthority('ROLE_USER')" th:replace="fragments :: html_products_main"></div>
 
 <!--Table with products for admin-->
-<div th:replace="fragments :: html_products_main_admin" sec:authorize="hasAnyAuthority('ROLE_ADMIN')" class="container"/>
+<div th:replace="fragments :: html_products_main_admin" sec:authorize="hasAnyAuthority('ROLE_ADMIN')" class="container"></div>
 
 <!-- Page Navigation -->
 <nav th:if="${totalPages > 1}">

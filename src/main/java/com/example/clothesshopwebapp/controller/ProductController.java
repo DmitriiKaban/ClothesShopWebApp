@@ -3,7 +3,6 @@ package com.example.clothesshopwebapp.controller;
 import com.example.clothesshopwebapp.entity.*;
 import com.example.clothesshopwebapp.repository.*;
 import com.example.clothesshopwebapp.services.AccountService;
-import com.example.clothesshopwebapp.services.MailService;
 import com.example.clothesshopwebapp.services.ProductService;
 import com.example.clothesshopwebapp.services.ShoppingCartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,13 +17,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.exceptions.TemplateInputException;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Controller
@@ -34,16 +33,6 @@ public class ProductController {
     private ProductRepository productRepo;
     @Autowired
     private TypeRepository typeRepository;
-    @Autowired
-    private BankCardRepository bankCardRepository;
-    @Autowired
-    private OrderRepository orderRepository;
-    @Autowired
-    private OrderLineRepository orderLineRepository;
-    @Autowired
-    private AddressRepository addressRepository;
-    @Autowired
-    private CountryRepository countryRepository;
     @Autowired
     private SeasonRepository seasonRepository;
     @Autowired
@@ -62,13 +51,26 @@ public class ProductController {
     private AccountService accountService;
     @Autowired
     private ShoppingCartService shoppingCartService;
-    @Autowired
-    private MailService mailService;
 
     public static String uploadDirectory = System.getProperty("user.dir") + "/src/main/resources/static/images";
 
+    public static ModelAndView getUserDetail(ModelAndView mav, AccountService accountService, ShoppingCartService shoppingCartService) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!auth.getName().equals("anonymousUser")) {
+            Account account = accountService.findOneByEmail(auth.getName()).get();
+            mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
+            int numItems = shoppingCartService.listCartItems(accountService.findOneByEmail(auth.getName()).get()).size();
+            mav.addObject("cart_items_num", numItems);
+        }
+        return mav;
+    }
+
 
     @GetMapping("/")
+    public ModelAndView showProductsGet() {
+        return listByPage(1, "price", "asc", "", "", "", "", "", "");
+    }
+    @PostMapping("/")
     public ModelAndView showProducts() {
         return listByPage(1, "price", "asc", "", "", "", "", "", "");
     }
@@ -83,9 +85,9 @@ public class ProductController {
                                    @Param("sex") String sex,
                                    @Param("size") String size,
                                    @Param("season") String season
-                                   ) {
+    ) {
         ModelAndView mav = new ModelAndView("list-products");
-        Page<Product> page = productService.getAll(currentPage, sortField, sortDirection, brand, color, type, sex, size ,season);
+        Page<Product> page = productService.getAll(currentPage, sortField, sortDirection, brand, color, type, sex, size, season);
         long totalItems = page.getTotalElements();
         int totalPages = page.getTotalPages();
         List<Product> listOfProducts = page.getContent();
@@ -101,44 +103,37 @@ public class ProductController {
         mav.addObject("sex", sex);
         mav.addObject("season", season);
         mav.addObject("size", size);
-        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
-            try{
-
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                Account account = accountService.findOneByEmail(auth.getName()).get();
-                mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
-                int numItems = shoppingCartService.listCartItems(accountService.findOneByEmail(auth.getName()).get()).size();
-                mav.addObject("cart_items_num", numItems);
-            }catch (NoSuchElementException ex){
-                ex.printStackTrace();
-            }
-        }
-
-        return mav;
+        return getUserDetail(mav, accountService, shoppingCartService);
     }
+
 
     @GetMapping("/products/{id}")
     public ModelAndView productDetails(@PathVariable("id") Long id) {//@PathVariable Long id){
         ModelAndView mav = new ModelAndView("details-product");
         Optional<Product> product = productRepo.findById(id);
-        if (product.isPresent()) {
+//        try {
+        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
+//                try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
-                try{
-                    auth = SecurityContextHolder.getContext().getAuthentication();
-                    Account account = accountService.findOneByEmail(auth.getName()).get();
-                    mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
-                    int numItems = shoppingCartService.listCartItems(accountService.findOneByEmail(auth.getName()).get()).size();
-                    mav.addObject("cart_items_num", numItems);
-                }catch (NoSuchElementException ex){
-                    ex.printStackTrace();
-                }
-            }
-            mav.addObject("product", product.get());
-            mav.addObject("qty", product.get().getQuantity());
-            return mav;
+            Account account = accountService.findOneByEmail(auth.getName()).get();
+            mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
+            int numItems = shoppingCartService.listCartItems(accountService.findOneByEmail(auth.getName()).get()).size();
+            mav.addObject("cart_items_num", numItems);
+
+            if (shoppingCartService.findByProductAndAccount(product.get(), account)) {
+                mav.addObject("is_in_cart", true);
+            } else mav.addObject("is_in_cart", false);
+//                } catch (NoSuchElementException ex) {
+//                    throw new NoSuchFieldException();
+//                }
         }
-        return mav.addObject("error", 404);
+        mav.addObject("product", product.get());
+        mav.addObject("qty", product.get().getQuantity());
+        return mav;
+
+//        } catch (TemplateInputException | NoSuchFieldException ex) {
+//            System.out.println(ex.printStackTrace());
+//        }
     }
 
     @PostMapping("/products/{id}")
@@ -163,55 +158,6 @@ public class ProductController {
         }
 
         return "redirect:/";
-    }
-
-    @GetMapping("/about")
-    public ModelAndView aboutCompany() {
-        ModelAndView mav = new ModelAndView("about");
-        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
-            try{
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                Account account = accountService.findOneByEmail(auth.getName()).get();
-                mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
-                int numItems = shoppingCartService.listCartItems(accountService.findOneByEmail(auth.getName()).get()).size();
-                mav.addObject("cart_items_num", numItems);
-            }catch (NoSuchElementException ex){
-                ex.printStackTrace();
-            }
-        }
-        return mav;
-    }
-    @GetMapping("/delivery")
-    public ModelAndView deliveryInfo() {
-        ModelAndView mav = new ModelAndView("deliveryInfo");
-        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
-            try{
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                Account account = accountService.findOneByEmail(auth.getName()).get();
-                mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
-                int numItems = shoppingCartService.listCartItems(accountService.findOneByEmail(auth.getName()).get()).size();
-                mav.addObject("cart_items_num", numItems);
-            }catch (NoSuchElementException ex){
-                ex.printStackTrace();
-            }
-        }
-        return mav;
-    }
-    @GetMapping("/contact")
-    public ModelAndView contact() {
-        ModelAndView mav = new ModelAndView("contactInfo");
-        if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
-            try{
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                Account account = accountService.findOneByEmail(auth.getName()).get();
-                mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
-                int numItems = shoppingCartService.listCartItems(accountService.findOneByEmail(auth.getName()).get()).size();
-                mav.addObject("cart_items_num", numItems);
-            }catch (NoSuchElementException ex){
-                ex.printStackTrace();
-            }
-        }
-        return mav;
     }
 
     @GetMapping("/products/new")
@@ -333,84 +279,12 @@ public class ProductController {
 
     }
 
-    @GetMapping("/checkout")
-    public ModelAndView checkout(){
-        ModelAndView mav = new ModelAndView("checkout_final_form");
-        BankCard bankCard = new BankCard();
-        Address address = new Address();
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            List<Country> countries = countryRepository.findAll();
-            mav.addObject("countries", countries);
-            Account account = accountService.findOneByEmail(auth.getName()).get();
-        }
-
-        List<Country> countries = countryRepository.findAll();
-        mav.addObject("countries", countries);
-
-        mav.addObject("bankCard", bankCard);
-        mav.addObject("address", address);
-        return mav;
-    }
-
-    @PostMapping("/checkout")
-    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    public ModelAndView checkout(@ModelAttribute(value = "bankCard") BankCard bankCard, @ModelAttribute(value = "address") Address address) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Account account = accountService.findOneByEmail(auth.getName()).get();
-        bankCard.setAccount(account);
-        System.out.println(bankCard);
-        System.out.println(account);
-        bankCardRepository.save(bankCard);
-
-        Order order = new Order();
-        order.setDate(new Date());
-        orderRepository.save(order);
-        addressRepository.save(address);
-        order.setAddress(address);
-        List<CartItem> listOfItems = shoppingCartService.listCartItems(account);
-        String stringListOfProducts = new String();
-        stringListOfProducts += "The list of products you ordered:";
-        Double totalPrice = 0D;
-        for (var item :
-             listOfItems) {
-            if(item.getProduct().getQuantity() - item.getQuantity() >= 0){
-                item.getProduct().setQuantity(item.getProduct().getQuantity() - item.getQuantity());
-                productRepo.save(item.getProduct());
-            }
-            else {
-                item.setQuantity(item.getProduct().getQuantity());
-                item.getProduct().setQuantity(0);
-                productRepo.save(item.getProduct());
-            }
-
-            OrderLine orderLine = new OrderLine();
-            orderLine.setOrder(order);
-            orderLine.setProduct(item.getProduct());
-            orderLine.setAccount(account);
-            orderLine.setQuantity(item.getQuantity());
-            orderLine.setPrice(item.getProduct().getPrice());
-            orderLineRepository.save(orderLine);
-
-            stringListOfProducts += "<br>" + item.getProduct().getColor().getName() + " " + item.getProduct().getType().getName() +
-                    " by " + item.getProduct().getBrand().getName() + " for $" + item.getProduct().getPrice() + " - " +
-                    item.getQuantity() + " qty";
-            totalPrice += item.getQuantity() * item.getProduct().getPrice();
-
-            shoppingCartService.removeProduct(item.getProduct().getId(), account);
-        }
-
-        stringListOfProducts += "<br>Total price is $" + totalPrice;
-        stringListOfProducts += "<br>Your order will be delivered to " + address.getCountry().getName() + ", str." + address.getStreet() + " bl." + address.getHouse() + ", ap." + address.getApartment();
-        try {
-            mailService.send("bertha.shop.company@gmail.com", account.getEmail(), stringListOfProducts);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        return showProducts();
-    }
+//    @ExceptionHandler(value = TemplateInputException.class)
+//    public ModelAndView handleException() {
+//        ModelAndView mav = new ModelAndView("404");
+//        mav.addObject("error_message", "Template Input Exception caused!");
+//
+//        return getUserDetail(mav, accountService, shoppingCartService);
+//    }
 
 }

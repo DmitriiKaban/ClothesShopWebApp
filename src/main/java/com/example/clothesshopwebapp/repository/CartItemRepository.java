@@ -14,6 +14,7 @@ import java.util.List;
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 
     List<CartItem> findByAccount(Account account);
+    CartItem findByProduct(Product product);
 
     CartItem findByAccountAndProduct(Account account, Product product);
 

@@ -24,6 +24,9 @@ public class ShoppingCartService {
     public List<CartItem> listCartItems(Account account){
         return cartItemRepository.findByAccount(account);
     }
+    public CartItem findByProduct(Product product){
+        return cartItemRepository.findByProduct(product);
+    }
 
     public Integer addProduct(Long productId, Integer quantity, Account account){
         Integer addedQuantity = quantity;
@@ -60,4 +63,7 @@ public class ShoppingCartService {
     }
 
 
+    public boolean findByProductAndAccount(Product product, Account account) {
+        return cartItemRepository.findByAccountAndProduct(account, product) != null;
+    }
 }

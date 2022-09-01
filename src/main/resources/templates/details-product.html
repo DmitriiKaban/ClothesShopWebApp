@@ -4,6 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments :: html_head_details"></head>
 <body>
+<script th:src="@{/js/moving_images.js}"></script>
 
 <!--Top navigation-->
 <nav th:replace="fragments :: html_top_navigation_bar_main"></nav>
@@ -47,9 +48,11 @@
             <br>
             <h5 th:text="'Price: ' + ${product.price} + '$'"></h5><br><br>
             <h4 id="alert_item_added" style="display: none; color: green; font-weight: 500;">Item has been added to the cart!</h4>
-            <a th:href="@{/login}" class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;"><h3>Add To Cart</h3></a>
-            <a sec:authorize="hasAnyRole('ROLE_USER')" th:if="${qty > 0}" class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;" id="addToCart"><h3>Add To Cart</h3></a>
             <h4 th:unless="${qty > 0}" class="text-danger">Product is out of stock!</h4>
+            <a th:href="@{/login}" sec:authorize="!isAuthenticated()" class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;"><h3>Add To Cart</h3></a>
+            <a sec:authorize="hasAnyRole('ROLE_USER')" th:if="${qty > 0 && !is_in_cart}" class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;" id="addToCart"><h3>Add To Cart</h3></a>
+            <h4 sec:authorize="hasAnyRole('ROLE_USER')" th:if="${is_in_cart}" class="text-success">Product is already in the cart</h4>
+            <a sec:authorize="hasAnyRole('ROLE_USER')" th:if="${is_in_cart}" class="btn btn-secondary btn-lg" id="productIsInCart" style="padding: 1.5em 3em;"><h3>Add To Cart</h3></a>
             <a sec:authorize="hasAnyRole('ROLE_USER')" th:unless="${qty > 0}" class="btn btn-secondary btn-lg" style="padding: 1.5em 3em;"><h3>Add To Cart</h3></a>
         </div>
 
@@ -66,6 +69,34 @@
     var token = "[[${_csrf.token}]]";
     var header = "[[${_csrf.headerName}]]";
 
+    var first_image = true;
+    var f_image_url = $('#hidden_image1').text();
+    var s_image_url = $('#hidden_image2').text();
+    console.log(f_image_url);
+    console.log(s_image_url);
+    $('.img1').css('background-image','url(' + f_image_url + ')');
+    $('.img2').css('background-image','url(' + s_image_url + ')');
+
+
+    jQuery('.img1').hover(function() {
+        jQuery('#my_image').attr("src", f_image_url);
+    });
+    jQuery('.img2').hover(function() {
+        jQuery('#my_image').attr("src", s_image_url);
+    });
+
+    $('#my_image').on({
+        'click': function(){
+            if(first_image){
+                $('#my_image').attr('src', f_image_url);
+                first_image = false;
+            }else{
+                $('#my_image').attr('src', s_image_url);
+                first_image = true;
+            }
+        }
+    });
+
     console.log("script " + token + " " + header);
     $(document).ajaxSend(function(e, xhr, options) {
         xhr.setRequestHeader(header, token);
@@ -74,7 +105,6 @@
 </script>
 
 <script th:src="@{/js/add_to_cart.js}"></script>
-<script th:src="@{/js/moving_images.js}"></script>
 
 </body>
 </html>

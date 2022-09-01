@@ -7,11 +7,12 @@ $(document).ready(function (){
 
 function addToCart(){
     productQty = $('#productQty').text();
+    num =  parseInt($('.cart_items_number').text());
+    //alert(num);
+    $('.cart_items_number').text(num + 1);
 
     let _url = "/cart/add/" + productId + "/" + productQty + "/";
 
-    // console.log(header + " " + token);
-    // alert(productQty + " items were added to cart");
     $.ajax({
         type: "POST",
         url: _url,

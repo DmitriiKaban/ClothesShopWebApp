@@ -18,15 +18,16 @@ public class WebSecurityConfig {
 
     private static String[] WHITELIST={
             "/",
-            "/register",
-            "/login",
             "/products/*",
             "/about",
             "/delivery",
             "/contact",
             "/images/*",
-            "/images/Icons/*",
-            "/js/*"
+            "/images/Icons/**",
+            "/js/*",
+            "/register",
+            "/login",
+            "/login/error"
     };
 
     @Bean
@@ -41,7 +42,7 @@ public class WebSecurityConfig {
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
                 .usernameParameter("email").passwordParameter("password")
-                .defaultSuccessUrl("/", true).failureUrl("/login?error")
+                .defaultSuccessUrl("/", true).failureUrl("/login/error")
                 .permitAll()
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout")
