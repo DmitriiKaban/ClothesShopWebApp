@@ -8,28 +8,9 @@
 <nav th:replace="fragments :: html_top_navigation_bar_main"></nav>
 
 <h2 style="text-align: center; margin-top: 6em" class="text-danger" th:text="${error_message}"></h2>
-<div class="container footer">
-    <hr>
-    <div class="footer-icons">
-        <a href="#">
-            <img src="/images/Icons/twitter-128.png" alt="twitter">
-        </a>
-        <a href="#">
-            <img src="/images/Icons/facebook-128.png" alt="facebook">
-        </a>
-        <a href="#">
-            <img src="/images/Icons/instagram.png" alt="instagram">
-        </a>
-        <a href="#">
-            <img src="/images/Icons/youtube-128.png" alt="youtube">
-        </a>
-        <a href="#">
-            <img src="/images/Icons/gmail-128.png" alt="gmail">
-        </a>
-    </div>
 
-    <p class="last_p"> &#169; BERTHA 2022</p>
-</div>
+<!--Footer-->
+<div th:replace="fragments :: footer"></div>
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

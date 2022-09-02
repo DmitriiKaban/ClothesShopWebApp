@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" xmlns:data="http://www.w3.org/1999/xhtml">
+      xmlns:th="http://www.thymeleaf.org" xmlns:data="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments :: html_head_main"></head>
 <body>
 <nav th:fragment="html_top_navigation_bar_main" class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -56,6 +57,34 @@
 <div class="container">
   <h3 style="text-align: center">Delivery</h3>
   <hr>
+</div>
+
+<div class="container">
+
+  <div class="story">
+    <div class="info">
+      <h2>Choose any country!</h2>
+      <p>Our company "Bertha" can deliver your order right to a post office near your house in any country of the world!
+        This is why our online shop is so unique: everyone regardless of their place of residence has an opportunity to buy modern,
+        fashionable and branded clothes from shorts for long summer evenings to coats for a winter walk.</p>
+      <!--            <a href="#" class="btn">START</a>-->
+    </div>
+
+    <img src="/images/delivery1.png" class="story-img" alt="delivery">
+  </div>
+  <hr>
+  <div class="story second">
+    <div class="info">
+      <h2>The process</h2>
+      <p>To make sure your order will be delivered to your home, enter the name of the country, city and your home address
+        correctly. You will receive an email with the whole information about your order(better check that one more time).
+        After this all you have to do is to wait until your clothes will arrive and then wear them with a great pleasure!
+        Thanks for your shopping with "Bertha"!</p>
+      <!--            <a href="#" class="btn">MORE</a>-->
+    </div>
+
+    <img src="/images/delivery2.png" class="story-img" alt="delivery">
+  </div>
 </div>
 
 <!--Footer-->

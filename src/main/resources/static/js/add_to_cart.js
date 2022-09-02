@@ -9,7 +9,11 @@ function addToCart(){
     productQty = $('#productQty').text();
     num =  parseInt($('.cart_items_number').text());
     //alert(num);
+
     $('.cart_items_number').text(num + 1);
+    if(isNaN(num)){
+        $('.cart_items_number').css("display", "inline-block");
+    }
 
     let _url = "/cart/add/" + productId + "/" + productQty + "/";
 

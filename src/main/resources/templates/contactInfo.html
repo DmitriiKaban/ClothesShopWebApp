@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" xmlns:data="http://www.w3.org/1999/xhtml">
+      xmlns:th="http://www.thymeleaf.org" xmlns:data="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments :: html_head_main"></head>
 <body>
 
@@ -57,6 +58,31 @@
 <div class="container">
     <h3 style="text-align: center">Contact information</h3>
     <hr>
+</div>
+<div class="container">
+
+    <div class="story">
+        <div class="info">
+            <h2>The ways to reach us</h2>
+            <p>We are your friends! That is why you can contact us whenever you need 24/7 and we will try to solve your problem.
+            Our managers will be happy to make your experience of using "Bertha" enjoyable! You can contact us on some social platforms
+            like Instagram, Twitter, Facebook or Gmail. Just click on the icons below!</p>
+        </div>
+
+        <img src="/images/contact1.png" class="story-img" alt="contact">
+    </div>
+    <hr>
+    <div class="story second">
+        <div class="info">
+            <h2>FAQ</h2>
+            <p>We are your friends! That is why you can contact us whenever you need 24/7 and we will try to solve your problem.
+                Our managers will be happy to make your experience of using "Bertha" enjoyable! You can contact us on some social platforms
+                like Instagram, Twitter, Facebook or Gmail. Just click on the icons below!</p>
+            <!--            <a href="#" class="btn">MORE</a>-->
+        </div>
+
+        <img src="/images/contact2.png" class="story-img" alt="contact">
+    </div>
 </div>
 
 <!--Footer-->

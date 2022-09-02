@@ -70,10 +70,6 @@ public class ProductController {
     public ModelAndView showProductsGet() {
         return listByPage(1, "price", "asc", "", "", "", "", "", "");
     }
-    @PostMapping("/")
-    public ModelAndView showProducts() {
-        return listByPage(1, "price", "asc", "", "", "", "", "", "");
-    }
 
     @GetMapping("/page/{pageNumber}")
     public ModelAndView listByPage(@PathVariable("pageNumber") int currentPage,

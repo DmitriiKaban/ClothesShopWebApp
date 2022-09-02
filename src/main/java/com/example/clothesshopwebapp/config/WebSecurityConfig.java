@@ -19,6 +19,7 @@ public class WebSecurityConfig {
     private static String[] WHITELIST={
             "/",
             "/products/*",
+            "/page/*",
             "/about",
             "/delivery",
             "/contact",
