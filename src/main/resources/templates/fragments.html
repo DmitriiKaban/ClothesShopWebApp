@@ -33,11 +33,78 @@
             text-align: center;
         }
 
+        .my_container_register_form {
+            display: block;
+            min-height: 100%;
+            margin-bottom: 6em;
+        }
+        .card{
+            margin-bottom:20px;
+            border:none;
+        }
+        .box {
+            width: 500px;
+            position: absolute;
+            top: 20%;
+            left: 55%;
+            /*background: #191919;*/
+            text-align: center;
+            transition: 0.25s;
+            /*margin-top: 50px*/
+        }
+        .box input[type="text"],
+        .box input[type="email"],
+        .box input[type="password"] {
+            border: 0;
+            background: none;
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            border: 2px solid #343a40;
+            padding: 10px 10px;
+            width: 250px;
+            outline: none;
+            color: #333;
+            border-radius: 24px;
+            transition: 0.25s
+        }
+        .box h1 {
+            color: white;
+            text-transform: uppercase;
+            font-weight: 500
+        }
+        .box input[type="text"]:focus,
+        .box input[type="email"]:focus,
+        .box input[type="password"]:focus {
+            width: 300px;
+            border-color: #2c9a5b
+        }
+        .box input[type="submit"] {
+            border: 0;
+            background-color: #414a52;
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+            border: 2px solid #414a52;
+            padding: 14px 40px;
+            outline: none;
+            color: white;
+            border-radius: 24px;
+            transition: 0.25s;
+            cursor: pointer;
+        }
+        .box input[type="submit"]:hover {
+            background: #131415;
+        }
+        .forgot {
+            text-decoration: underline
+        }
+
         hr {
             border-top: #343a40 solid 1px;
         }
 
-        .cart_items_number {
+        .cart_items_number, .cart_items_number1 {
             display: inline-block;
             padding: 0.15em;
             background: red;
@@ -413,16 +480,28 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav">
-                <li class="nav-item active">
+                <li th:if="${page_name == null}" class="nav-item active">
                     <a class="nav-link nav_text" th:href="@{/}"><h5>Catalog</h5></a>
                 </li>
-                <li class="nav-item nav_text">
+                <li th:if="${page_name != null}" class="nav-item">
+                    <a class="nav-link nav_text" th:href="@{/}"><h5>Catalog</h5></a>
+                </li>
+                <li th:if="${page_name == 'about'}" class="nav-item active">
                     <a class="nav-link" href="/about"><h5>About us</h5></a>
                 </li>
-                <li class="nav-item nav_text">
+                <li th:unless="${page_name == 'about'}" class="nav-item nav_text">
+                    <a class="nav-link" href="/about"><h5>About us</h5></a>
+                </li>
+                <li th:if="${page_name == 'delivery'}" class="nav-item active">
                     <a class="nav-link" href="/delivery"><h5>Delivery</h5></a>
                 </li>
-                <li class="nav-item">
+                <li th:unless="${page_name == 'delivery'}" class="nav-item nav_text">
+                    <a class="nav-link" href="/delivery"><h5>Delivery</h5></a>
+                </li>
+                <li th:if="${page_name == 'contact'}" class="nav-item active">
+                    <a class="nav-link" href="/contact"><h5>Contact</h5></a>
+                </li>
+                <li th:unless="${page_name == 'contact'}" class="nav-item">
                     <a class="nav-link" href="/contact"><h5>Contact</h5></a>
                 </li>
             </ul>
@@ -434,7 +513,7 @@
                     <a class="nav-link" th:href="@{/register}"><h5>Register</h5></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link">Hi, <span th:text="${user_name}">Username</span></a>
+                    <a th:href="@{/history}" class="nav-link">Hi, <span th:text="${user_name}">Username</span></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
                     <a th:href="@{/cart}">
@@ -442,6 +521,7 @@
                     </a>
                 </li>
                 <div th:if="${cart_items_num > 0}" class="cart_items_number" th:text="${cart_items_num}"></div>
+                <div style="display: none" class="cart_items_number1">1</div>
                 <li class="nav-item" sec:authorize="isAuthenticated()" style="margin-left: 1em">
                     <form action="#"
                           th:action="@{/logout}"
@@ -739,6 +819,9 @@
 
 <div  th:fragment="html_products_main_admin" class="container">
     <a th:href="@{/products/new}" class="btn btn-secondary ml-2">Add product</a>
+    <a th:href="@{/brand/new}" class="btn btn-secondary ml-2">Add brand</a>
+    <a th:href="@{/type/new}" class="btn btn-secondary ml-2">Add type</a>
+    <a th:href="@{/color/new}" class="btn btn-secondary ml-2">Add color</a>
     <table class="table table-bordered table-striped mt-1" id="employee-table">
         <thead>
         <tr>

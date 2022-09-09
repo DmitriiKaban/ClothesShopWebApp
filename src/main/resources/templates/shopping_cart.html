@@ -4,7 +4,7 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Shop</title>
+    <title>Bertha</title>
     <link rel="shortcut icon" type="image/x-icon" href="/images/Icons/logo.ico" />
     <link rel="stylesheet"
           type="text/css"
@@ -144,7 +144,7 @@
                 <li class="nav-item nav_text">
                     <a class="nav-link" href="/about"><h5>About us</h5></a>
                 </li>
-                <li class="nav-item  active">
+                <li class="nav-item ">
                     <a class="nav-link" href="/delivery"><h5>Delivery</h5></a>
                 </li>
                 <li class="nav-item">
@@ -159,7 +159,7 @@
                     <a class="nav-link" th:href="@{/register}"><h5>Register</h5></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link">Hi, <span th:text="${user_name}">Username</span></a>
+                    <a th:href="@{/history}" class="nav-link">Hi, <span th:text="${user_name}">Username</span></a>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()" style="margin-left: 3em">
                     <form action="#"
@@ -225,8 +225,11 @@
     </div>
 
 
-    <div th:if="${#lists.isEmpty(cartItems)}">
+    <div th:unless="${message != null}" th:if="${#lists.isEmpty(cartItems)}">
         <h3 style="text-align: center">Your cart is empty...</h3>
+    </div>
+    <div th:if="${message != null}">
+        <h3 style="text-align: center" class="text-danger" th:text="${message}"></h3>
     </div>
 </div>
 

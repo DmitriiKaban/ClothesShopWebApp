@@ -26,17 +26,20 @@ public class NavigationController {
     @GetMapping("/about")
     public ModelAndView aboutCompany() {
         ModelAndView mav = new ModelAndView("about");
+        mav.addObject("page_name", "about");
         return getUserDetail(mav, accountService, shoppingCartService);
     }
 
     @GetMapping("/delivery")
     public ModelAndView deliveryInfo() {
         ModelAndView mav = new ModelAndView("deliveryInfo");
+        mav.addObject("page_name", "delivery");
         return getUserDetail(mav, accountService, shoppingCartService);
     }
     @GetMapping("/contact")
     public ModelAndView contact() {
         ModelAndView mav = new ModelAndView("contactInfo");
+        mav.addObject("page_name", "contact");
         return getUserDetail(mav, accountService, shoppingCartService);
     }
 

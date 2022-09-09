@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class RegisterController {
@@ -23,9 +24,15 @@ public class RegisterController {
     }
 
     @PostMapping("/register")
-    public String registerNewUser(@ModelAttribute Account account){
+    public ModelAndView registerNewUser(@ModelAttribute Account account){
+        ModelAndView mav = new ModelAndView("login");
+        if(accountService.findOneByEmail(account.getEmail()).isPresent()){
+            mav = new ModelAndView("register");
+            mav.addObject("user_exists", true);
+            return mav;
+        }
         accountService.save(account);
 
-        return "redirect:/login";
+        return mav;
     }
 }

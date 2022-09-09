@@ -212,10 +212,10 @@
         </select>
         <br>
         <label for="price">Price:</label><br>
-        <input type="number" id="price" th:field="*{price}" min="1">
+        <input type="number" id="price" th:field="*{price}" min="1" required>
         <br>
         <label for="qta">Quantity:</label><br>
-        <input type="number" id="qta" th:field="*{quantity}" min="0"><br>
+        <input type="number" id="qta" th:field="*{quantity}" min="0" required><br>
         <br>
         <label for="image1">First image:</label><br>
         <input type="file" id="image1" name="img1"><br>

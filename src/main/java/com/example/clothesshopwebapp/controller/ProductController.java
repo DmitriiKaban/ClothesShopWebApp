@@ -10,7 +10,9 @@ import org.springframework.data.domain.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -47,6 +49,10 @@ public class ProductController {
     private ImagesRepository imagesRepository;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private OrderRepository orderRepository;
+    @Autowired
+    private OrderLineRepository orderLineRepository;
     @Autowired
     private AccountService accountService;
     @Autowired
@@ -92,7 +98,7 @@ public class ProductController {
         mav.addObject("totalPages", totalPages);
         mav.addObject("currentPage", currentPage);
         mav.addObject("sortField", sortField);
-        mav.addObject("sortDirection", sortField);
+        mav.addObject("sortDirection", sortDirection);
         mav.addObject("brand", brand);
         mav.addObject("type", type);
         mav.addObject("color", color);
@@ -107,9 +113,7 @@ public class ProductController {
     public ModelAndView productDetails(@PathVariable("id") Long id) {//@PathVariable Long id){
         ModelAndView mav = new ModelAndView("details-product");
         Optional<Product> product = productRepo.findById(id);
-//        try {
         if (!SecurityContextHolder.getContext().getAuthentication().getName().equals("anonymousUser")) {
-//                try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Account account = accountService.findOneByEmail(auth.getName()).get();
             mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
@@ -119,17 +123,10 @@ public class ProductController {
             if (shoppingCartService.findByProductAndAccount(product.get(), account)) {
                 mav.addObject("is_in_cart", true);
             } else mav.addObject("is_in_cart", false);
-//                } catch (NoSuchElementException ex) {
-//                    throw new NoSuchFieldException();
-//                }
         }
         mav.addObject("product", product.get());
         mav.addObject("qty", product.get().getQuantity());
         return mav;
-
-//        } catch (TemplateInputException | NoSuchFieldException ex) {
-//            System.out.println(ex.printStackTrace());
-//        }
     }
 
     @PostMapping("/products/{id}")
@@ -187,7 +184,7 @@ public class ProductController {
     @ResponseBody
     public ModelAndView saveNewProduct(@ModelAttribute Product product, @RequestParam("img1") MultipartFile image1, @RequestParam("img2") MultipartFile image2) {
 
-        ModelAndView mav = new ModelAndView("list-products");
+        ModelAndView mav = new ModelAndView("/page/1");
         Path fileNameAndPath1 = Paths.get(uploadDirectory, image1.getOriginalFilename());
         Path fileNameAndPath2 = Paths.get(uploadDirectory, image2.getOriginalFilename());
         try {
@@ -213,8 +210,83 @@ public class ProductController {
             mav.addObject("user_name", auth.getName());
         }
 
-        return mav;
+        return showProductsGet();
     }
+
+
+    @GetMapping("/brand/new")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public String createNewBrand(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Account> optionalAccount = accountService.findOneByEmail(auth.getName());
+        if (optionalAccount.isPresent()) {
+            model.addAttribute("brand", new Brand());
+            return "brand_new";
+        } else {
+            return "404";
+        }
+    }
+
+    @PostMapping("/brand/new")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @ResponseBody
+    public ModelAndView saveNewBrand(@ModelAttribute("brand") Brand brand) {
+        System.out.println("post");
+        if (brandRepository.findBrandByNameContainingIgnoreCase(brand.getName().toLowerCase()) == null) {
+            brandRepository.save(brand);
+        }
+
+        return showProductsGet();
+    }
+
+    @GetMapping("/color/new")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public String createNewColor(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Account> optionalAccount = accountService.findOneByEmail(auth.getName());
+        if (optionalAccount.isPresent()) {
+            model.addAttribute("color", new Color());
+            return "color_new";
+        } else {
+            return "404";
+        }
+    }
+
+    @PostMapping("/color/new")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @ResponseBody
+    public ModelAndView saveNewBrand(@ModelAttribute Color color) {
+        System.out.println("post");
+        if (colorRepository.findColorByNameContainingIgnoreCase(color.getName().toLowerCase()) == null) {
+            colorRepository.save(color);
+        }
+
+        return showProductsGet();
+    }
+    @GetMapping("/type/new")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    public String createNewType(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Optional<Account> optionalAccount = accountService.findOneByEmail(auth.getName());
+        if (optionalAccount.isPresent()) {
+            model.addAttribute("type", new Type());
+            return "type_new";
+        } else {
+            return "404";
+        }
+    }
+
+    @PostMapping("/type/new")
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
+    @ResponseBody
+    public ModelAndView saveNewType(@ModelAttribute Type type) {
+        if (typeRepository.findTypeByNameContainingIgnoreCase(type.getName().toLowerCase()) == null) {
+            typeRepository.save(type);
+        }
+
+        return showProductsGet();
+    }
+
 
     @GetMapping("/products/{id}/edit")
     @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
@@ -275,12 +347,36 @@ public class ProductController {
 
     }
 
-//    @ExceptionHandler(value = TemplateInputException.class)
-//    public ModelAndView handleException() {
-//        ModelAndView mav = new ModelAndView("404");
-//        mav.addObject("error_message", "Template Input Exception caused!");
-//
-//        return getUserDetail(mav, accountService, shoppingCartService);
-//    }
+
+    @GetMapping("/history")
+    public ModelAndView showShoppingCart(ModelAndView mav,
+                                         @AuthenticationPrincipal Authentication authentication, Optional<String> message) {
+
+        mav = new ModelAndView("order-history");
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!auth.getName().equals("anonymousUser")) {
+            Account account = accountService.findOneByEmail(auth.getName()).get();
+            mav.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
+            int numItems = shoppingCartService.listCartItems(accountService.findOneByEmail(auth.getName()).get()).size();
+            mav.addObject("cart_items_num", numItems);
+            List<Order> order = orderRepository.findByAccount(account);
+            List<OrderLine> listOfOrders = new ArrayList<>();
+            if (!order.isEmpty()) {
+                for (var item :
+                        order) {
+                    listOfOrders.addAll(orderLineRepository.findByOrder(item));
+                }
+                mav.addObject("orders", listOfOrders);
+                mav.addObject("have_orders", true);
+            } else {
+                mav.addObject("message", "Your history is empty...");
+                System.out.println("Your history is empty...");
+            }
+        }
+
+
+        return getUserDetail(mav, accountService, shoppingCartService);
+    }
 
 }

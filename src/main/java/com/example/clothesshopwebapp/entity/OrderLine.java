@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "tbl_order_line")
@@ -21,11 +22,6 @@ public class OrderLine {
     @OneToOne
     private Product product;
 
-
-    @JoinColumn(name = "account_id")
-    @ManyToOne
-    private Account account;
-
     @JoinColumn(name = "order_id")
     @ManyToOne
     private Order order;
@@ -33,4 +29,6 @@ public class OrderLine {
     private Double price;
 
     private Integer quantity;
+
+    private Date date;
 }

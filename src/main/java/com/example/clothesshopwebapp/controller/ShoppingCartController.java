@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -90,9 +91,10 @@ public class ShoppingCartController {
 
 
     @GetMapping("/cart")
-    public String showShoppingCart(Model model,
-                                   @AuthenticationPrincipal Authentication authentication){
+    public ModelAndView showShoppingCart(ModelAndView mav,
+                                   @AuthenticationPrincipal Authentication authentication, Optional<String> message){
 
+        mav = new ModelAndView("shopping_cart");
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = "";
         if (principal instanceof UserDetails) {
@@ -107,24 +109,20 @@ public class ShoppingCartController {
         if(username != null){
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             Account acc = accountService.findOneByEmail(auth.getName()).get();
-            model.addAttribute("user_name", acc.getFirstName() + ' ' + acc.getLastName());
+            mav.addObject("user_name", acc.getFirstName() + ' ' + acc.getLastName());
         }
 
-        model.addAttribute("cartItems", cartItems);
-        return "shopping_cart";
+        mav.addObject("cartItems", cartItems);
+        if(message.isPresent()){
+            mav.addObject("message", message.get());
+        }
+        return mav;
     }
     @GetMapping("/checkout")
     public ModelAndView checkout(){
         ModelAndView mav = new ModelAndView("checkout_final_form");
         BankCard bankCard = new BankCard();
         Address address = new Address();
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            List<Country> countries = countryRepository.findAll();
-            mav.addObject("countries", countries);
-            Account account = accountService.findOneByEmail(auth.getName()).get();
-        }
 
         List<Country> countries = countryRepository.findAll();
         mav.addObject("countries", countries);
@@ -136,7 +134,19 @@ public class ShoppingCartController {
 
     @PostMapping("/checkout")
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    public String checkout(@ModelAttribute(value = "bankCard") BankCard bankCard, @ModelAttribute(value = "address") Address address, Model model) {
+    public ModelAndView checkout(@ModelAttribute(value = "bankCard") BankCard bankCard, @ModelAttribute(value = "address") Address address, ModelAndView model) {
+
+        Date currentDate = new Date();
+        int currentYear = currentDate.getYear() % 100;
+        System.out.println(currentYear);
+        int currentMonth = currentDate.getMonth();
+        if(bankCard.getExpiryYear() < currentYear || (bankCard.getExpiryMonth() <= currentMonth && bankCard.getExpiryYear() == currentYear)){
+            model = new ModelAndView("checkout_final_form");
+            List<Country> countries = countryRepository.findAll();
+            model.addObject("countries", countries);
+            model.addObject("card_expired", true);
+            return model;
+        }
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Account account = accountService.findOneByEmail(auth.getName()).get();
@@ -146,7 +156,7 @@ public class ShoppingCartController {
         bankCardRepository.save(bankCard);
 
         Order order = new Order();
-        order.setDate(new Date());
+        order.setAccount(account);
         orderRepository.save(order);
         addressRepository.save(address);
         order.setAddress(address);
@@ -168,8 +178,9 @@ public class ShoppingCartController {
 
             OrderLine orderLine = new OrderLine();
             orderLine.setOrder(order);
+            //orderLine.setDate(new SimpleDateFormat("dd MMM yyyy"));
+            orderLine.setDate(new Date());
             orderLine.setProduct(item.getProduct());
-            orderLine.setAccount(account);
             orderLine.setQuantity(item.getQuantity());
             orderLine.setPrice(item.getProduct().getPrice());
             orderLineRepository.save(orderLine);
@@ -191,9 +202,9 @@ public class ShoppingCartController {
         }
         if (!auth.getName().equals("anonymousUser")) {
             account = accountService.findOneByEmail(auth.getName()).get();
-            model.addAttribute("user_name", account.getFirstName() + ' ' + account.getLastName());
+            model.addObject("user_name", account.getFirstName() + ' ' + account.getLastName());
         }
-        return showShoppingCart(model, auth);
+        return showShoppingCart(model, auth, Optional.of("Thanks for purchasing, see details on your Email. Good Luck!"));
     }
 
 }

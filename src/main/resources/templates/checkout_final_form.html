@@ -181,26 +181,27 @@
                 <div class="card">
                     <form action="#" th:action="@{/checkout}" th:object="${bankCard}" method="POST" class="box">
                         <p class="text-muted"> Please enter your personal data!</p>
-                        <input type="text" id="firstname" th:field="*{firstName}" placeholder="First name">
-                        <input type="text" id="lastname" th:field="*{lastName}" placeholder="Last name">
-                        <input type="text" minlength="16" maxlength="16" id="cardNumber" th:field="*{cardNumber}" placeholder="Card number">
-                        <input type="text" minlength="3" maxlength="3" id="cvv" th:field="*{cvv}" placeholder="cvv">
-                        <input type="text" minlength="2" maxlength="2" id="expiryMonth" th:field="*{expiryMonth}" placeholder="Expiry Month">
-                        <input type="text" minlength="2" maxlength="2" id="expiryYear" th:field="*{expiryYear}" placeholder="Expiry Year">
+                        <input type="text" id="firstname" th:field="*{firstName}" placeholder="First name" required>
+                        <input type="text" id="lastname" th:field="*{lastName}" placeholder="Last name" required>
+                        <input type="text" minlength="16" maxlength="16" id="cardNumber" th:field="*{cardNumber}" placeholder="Card number" required>
+                        <input type="text" minlength="3" maxlength="3" id="cvv" th:field="*{cvv}" placeholder="cvv" required>
+                        <h4 style="text-align: center" th:if="${card_expired}" class="text-danger">Your card has to be renewed, it expired!</h4>
+                        <input type="text" minlength="1" maxlength="2" id="expiryMonth" th:field="*{expiryMonth}" placeholder="Expiry Month" required>
+                        <input type="text" minlength="2" maxlength="2" id="expiryYear" th:field="*{expiryYear}" placeholder="Expiry Year" required>
 
                         <div th:object="${address}">
                         <h3>Address</h3>
-                        <select th:field="*{country}" id="country" name="country" class="form-control" style="height: 3em">
+                        <select th:field="*{country}" id="country" name="country" class="form-control" style="height: 3em" required>
                             <option th:each="country: ${countries}"
                                     th:value="${country.id}"
-                                    th:text="${country.name}">
+                                    th:text="${country.name}" required>
                             </option>
                         </select>
 
-                        <input type="text" id="city" th:field="*{city}" placeholder="City">
-                        <input type="text" id="street" th:field="*{street}" placeholder="Street">
-                        <input type="text" id="house" th:field="*{house}" placeholder="House">
-                        <input type="text" id="apartment" th:field="*{apartment}" placeholder="Apartment">
+                        <input type="text" id="city" th:field="*{city}" placeholder="City" required>
+                        <input type="text" id="street" th:field="*{street}" placeholder="Street" required>
+                        <input type="text" id="house" th:field="*{house}" placeholder="House" required>
+                        <input type="text" id="apartment" th:field="*{apartment}" placeholder="Apartment" required>
 
                         <input type="submit" name="" value="Buy">
                     </form>

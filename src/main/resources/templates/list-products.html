@@ -20,7 +20,7 @@
         <li class="page-item">
             <a style="color: #343a40" class="page-link" href="#" tabindex="-1" aria-disabled="true"
                th:if="${currentPage > 1}"
-               th:href="@{'/page/' + ${currentPage - 1} + '?sortField=price' + '&sortDirection=asc' + '&brand=' + ${brand != null ? brand : ''}
+               th:href="@{'/page/' + ${currentPage - 1} + '?sortField=price' + '&sortDirection=' + ${sortDirection} + '&brand=' + ${brand != null ? brand : ''}
                        + '&color=' + ${color != null ? color : ''} + '&type=' + ${type != null ? type : ''} + '&sex=' + ${sex != null ? sex : ''}
                        +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }">
                 Previous </a>
@@ -28,7 +28,7 @@
         </li>
         <span style="color: #343a40" th:each="i: ${#numbers.sequence(1, totalPages)}">
             <li>
-            <a style="color: #343a40" class="page-link" th:if="${i != currentPage}" th:href="@{'/page/' + ${i} + '?sortField=price' + '&sortDirection=asc' + '&brand=' + ${brand != null ? brand : ''}
+            <a style="color: #343a40" class="page-link" th:if="${i != currentPage}" th:href="@{'/page/' + ${i} + '?sortField=price' + '&sortDirection=' + ${sortDirection} + '&brand=' + ${brand != null ? brand : ''}
                        + '&color=' + ${color != null ? color : ''} + '&type=' + ${type != null ? type : ''} + '&sex=' + ${sex != null ? sex : ''}
                        +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }">[[${i}]] </a>
             <span style="color: #343a40; background: lightgray" class="page-link" th:unless="${i != currentPage}">[[${i}]] </span>
@@ -36,7 +36,7 @@
         </span>
         <li class="page-item">
             <a style="color: #343a40" class="page-link" th:if="${currentPage < totalPages}"
-               th:href="@{'/page/' + ${currentPage + 1} + '?sortField=price' + '&sortDirection=asc' + '&brand=' + ${brand != null ? brand : ''}
+               th:href="@{'/page/' + ${currentPage + 1} + '?sortField=price' + '&sortDirection=' + ${sortDirection} + '&brand=' + ${brand != null ? brand : ''}
                        + '&color=' + ${color != null ? color : ''} + '&type=' + ${type != null ? type : ''} + '&sex=' + ${sex != null ? sex : ''}
                        +  '&size=' + ${size != null ?size : ''} + '&season=' +  ${season != null ?season : ''} }">
                 Next </a>
